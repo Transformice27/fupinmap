@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ECharts map Demo</title>
+<style>
+        *{margin:0;padding:0}
+        html,body{
+            width:100%;
+            height:100%;
+        }
+        #map-wrap{
+              width:600px;
+              height:450px;
+              margin: 150px auto;
+              border:1px solid #ddd;
+          }
+        /*默认长宽比0.75*/
+</style>
+</head>
+<body>
+	<style>
+        *{margin:0;padding:0}
+        html,body{
+            width:100%;
+            height:100%;
+        }
+        #main{
+              width:800px;
+              height:600px;
+              margin: 150px auto;
+              border:1px solid #ddd;
+          }
+        /*建议长宽比0.75，符合审美*/
+    </style>
+     
+     
+    <div id="map-wrap">
+ 
+    </div>
+</body>
+<script th:src="@{/webjars/echarts/4.7.0/dist/echarts.js}"></script>
+<script src="js/jquery.prettyPhoto.js" th:src="@{/webjars/jquery/3.6.0/jquery.js}"></script>
+<script src="/map/js/china.js" th:src="@{/webjars/echarts/4.7.0/map/js/china.js}"></script>
+<script>
+
+$(function(){
+$.ajax({
+		type : "get",
+		url : "/getJsonData",
+		//dataType:"json",
+		cache : false,
+		async : false,
+		success : function(result) {
+			var res = [];
+			console.log(result)
+			for (var i = 0; i < result.length; i++) {
+				//获得每个城市的统计数量
+				//var count = result[i].createTime
+				//获得经纬度
+				var geo = [ result[i].longitude, result[i].latitude ]
+				res.push({
+					name : result[i].cityName,
+					//两个字符串拼接
+					value : geo,
+				});
+			}
+			// 基于准备好的dom，初始化echarts实例
+			var myChart = echarts.init(document.getElementById('map-wrap'));
+			//var option = {
+			myChart.setOption({
+				tooltip: {
+			          show: false
+			        },
+			        geo: {
+			          map: "china",
+			          roam: false,// 一定要关闭拖拽
+			          zoom: 1.23,
+			          center: [105, 36], // 调整地图位置
+			          label: {
+			            normal: {
+			              show: false, //关闭省份名展示
+			              fontSize: "10",
+			              color: "rgba(0,0,0,0.7)"
+			            },
+			            emphasis: {
+			              show: false
+			            }
+			          },
+			          itemStyle: {
+			            normal: {
+			              areaColor: "#0d0059",
+			              borderColor: "#389dff",
+			              borderWidth: 1, //设置外层边框
+			              shadowBlur: 5,
+			              shadowOffsetY: 8,
+			              shadowOffsetX: 0,
+			              shadowColor: "#01012a"
+			            },
+			            emphasis: {
+			              areaColor: "#fff0f5",
+			              shadowOffsetX: 0,
+			              shadowOffsetY: 0,
+			              shadowBlur: 5,
+			              borderWidth: 0,
+			              shadowColor: "rgba(0, 0, 0, 0.5)"
+			            }
+			          }
+			        },
+			        series: [
+			          {
+			            type: "map",
+			            map: "china",
+			            roam: false,
+			            zoom: 1.23,
+			            center: [105, 36],
+			            // geoIndex: 1,
+			            // aspectScale: 0.75, //长宽比
+			            showLegendSymbol: false, // 存在legend时显示
+			            label: {
+			              normal: {
+			                show: false
+			              },
+			              emphasis: {
+			                show: false,
+			                textStyle: {
+			                  color: "#fff"
+			                }
+			              }
+			            },
+			            itemStyle: {
+			              normal: {
+			                areaColor: "#fff0f5",
+			                borderColor: "#389dff",
+			                borderWidth: 0.5
+			              },
+			              emphasis: {
+			                areaColor: "#fff0f5",
+			                shadowOffsetX: 0,
+			                shadowOffsetY: 0,
+			                shadowBlur: 5,
+			                borderWidth: 0,
+			                shadowColor: "rgba(0, 0, 0, 0.5)"
+			              }
+			            }
+			          }
+			        ]
+			});
+		}
+	})
+})
+ 
+ 
+</script>
+</html>
